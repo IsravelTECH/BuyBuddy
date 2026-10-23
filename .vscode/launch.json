@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "BuyBuddy (Chrome with CORS disabled)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "chrome",
+            "args": [
+                "--web-browser-flag",
+                "--disable-web-security"
+            ]
+        },
+        {
+            "name": "BuyBuddy (Windows Desktop)",
+            "request": "launch",
+            "type": "dart",
+            "deviceId": "windows"
+        }
+    ]
+}
