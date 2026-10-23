@@ -1,0 +1,170 @@
+name: Build BuyBuddy Mobile (Android APK & iOS)
+
+'on':
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Android Build Type'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - release
+          - debug
+
+permissions:
+  contents: write
+
+jobs:
+  # ==========================================
+  # 1. ANDROID BUILD JOB
+  # ==========================================
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java Development Kit (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Static Code Analysis
+        run: flutter analyze
+
+      - name: Run Unit Tests
+        run: flutter test
+
+      - name: Build Debug APK
+        if: ${{ github.event.inputs.build_type == 'both' || github.event.inputs.build_type == 'debug' || github.event_name != 'workflow_dispatch' }}
+        run: flutter build apk --debug
+
+      - name: Build Release APK
+        if: ${{ github.event.inputs.build_type == 'both' || github.event.inputs.build_type == 'release' || github.event_name != 'workflow_dispatch' }}
+        run: flutter build apk --release
+
+      - name: Rename APK Artifacts
+        run: |
+          mkdir -p build/artifacts
+          if [ -f build/app/outputs/flutter-apk/app-release.apk ]; then
+            cp build/app/outputs/flutter-apk/app-release.apk build/artifacts/BuyBuddy-release.apk
+          fi
+          if [ -f build/app/outputs/flutter-apk/app-debug.apk ]; then
+            cp build/app/outputs/flutter-apk/app-debug.apk build/artifacts/BuyBuddy-debug.apk
+          fi
+
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuyBuddy-Android-APKs
+          path: build/artifacts/*.apk
+          retention-days: 30
+
+  # ==========================================
+  # 2. IOS BUILD JOB
+  # ==========================================
+  build-ios:
+    name: Build iOS Application
+    runs-on: macos-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build iOS (No Codesign for CI/CD)
+        run: flutter build ios --release --no-codesign
+
+      - name: Package iOS App into .ipa
+        run: |
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r BuyBuddy-iOS-unsigned.ipa Payload
+          zip -r BuyBuddy-Runner.app.zip Runner.app
+          mkdir -p ../../artifacts
+          mv BuyBuddy-iOS-unsigned.ipa ../../artifacts/
+          mv BuyBuddy-Runner.app.zip ../../artifacts/
+
+      - name: Upload iOS Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuyBuddy-iOS-Packages
+          path: build/artifacts/*
+          retention-days: 30
+
+  # ==========================================
+  # 3. GITHUB RELEASES (On Version Tags e.g. v1.0.0)
+  # ==========================================
+  create-release:
+    name: Create GitHub Release
+    needs: [build-android, build-ios]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Download Android Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: BuyBuddy-Android-APKs
+          path: release-assets/android
+
+      - name: Download iOS Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: BuyBuddy-iOS-Packages
+          path: release-assets/ios
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: BuyBuddy Mobile ${{ github.ref_name }}
+          body: |
+            ## BuyBuddy Mobile Build - ${{ github.ref_name }}
+            
+            ### Included Downloads:
+            - **Android Release APK**: `BuyBuddy-release.apk`
+            - **Android Debug APK**: `BuyBuddy-debug.apk` (Instantly installable without developer signing)
+            - **iOS Package**: `BuyBuddy-iOS-unsigned.ipa` (Install via AltStore, Sideloadly, or Sign with Xcode)
+            - **iOS Runner App**: `BuyBuddy-Runner.app.zip`
+          files: |
+            release-assets/android/*
+            release-assets/ios/*
+          draft: false
+          prerelease: false
