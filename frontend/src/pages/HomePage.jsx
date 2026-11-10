@@ -167,6 +167,56 @@ const HomePage = () => {
 					</div>
 				</div>
 			)}
+
+			{/* CROSS-DEVICE SHOWCASE SECTION */}
+			<section className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14'>
+				<div className='relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white shadow-2xl p-6 sm:p-10 lg:p-12 border border-slate-800'>
+					<div className='grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center'>
+						<div className='lg:col-span-5 space-y-4 sm:space-y-6'>
+							<div className='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-400/20 text-blue-300 text-xs font-semibold uppercase tracking-wider'>
+								<Sparkles className='w-3.5 h-3.5 text-blue-400' />
+								<span>Omnichannel Experience</span>
+							</div>
+							<h2 className='text-2xl sm:text-4xl font-black tracking-tight leading-tight'>
+								Shop Seamlessly. <br />
+								<span className='bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-300 bg-clip-text text-transparent'>
+									Web, Tablet & Mobile.
+								</span>
+							</h2>
+							<p className='text-slate-300 text-sm sm:text-base leading-relaxed font-normal'>
+								Enjoy an uninterrupted luxury shopping journey across all your devices. Your cart, wishlists, and curated recommendations stay effortlessly synchronized anywhere you go.
+							</p>
+							<div className='flex flex-wrap items-center gap-3 pt-2'>
+								<a
+									href='https://github.com/IsravelTECH/BuyBuddy/actions'
+									target='_blank'
+									rel='noopener noreferrer'
+									className='inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold text-sm text-white shadow-lg shadow-blue-500/25 transition-all'
+								>
+									<span>Get Mobile App</span>
+									<ArrowRight className='w-4 h-4' />
+								</a>
+								<button
+									onClick={scrollToCategories}
+									className='inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 font-semibold text-sm text-white border border-white/15 transition-all'
+								>
+									<span>Explore Collections</span>
+								</button>
+							</div>
+						</div>
+
+						<div className='lg:col-span-7 flex justify-center'>
+							<div className='relative w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 group'>
+								<img
+									src='/showcase.jpg'
+									alt='BuyBuddy on Desktop, Tablet, and Mobile'
+									className='w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-500'
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 };
