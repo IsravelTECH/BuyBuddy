@@ -188,7 +188,7 @@ const HomePage = () => {
 							</p>
 							<div className='flex flex-wrap items-center gap-3 pt-2'>
 								<a
-									href='https://github.com/IsravelTECH/BuyBuddy/actions'
+									href='https://github.com/IsravelTECH/BuyBuddy-App/actions'
 									target='_blank'
 									rel='noopener noreferrer'
 									className='inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold text-sm text-white shadow-lg shadow-blue-500/25 transition-all'

@@ -22,7 +22,7 @@
 **BuyBuddy** is a modern, high-performance omnichannel e-commerce platform crafted with a seamless user experience across Web, Tablet, and Mobile. It features authentic category styling, real-time cart and coupon synchronization, an ambient video hero banner, and an enterprise-grade admin analytics dashboard.
 
 - 🌐 **Live Web Application:** [https://e-commerce-store-anqa.onrender.com/](https://e-commerce-store-anqa.onrender.com/)
-- 📱 **Mobile App Repository:** [IsravelTECH/BuyBuddy](https://github.com/IsravelTECH/BuyBuddy)
+- 📱 **Mobile App Repository:** [IsravelTECH/BuyBuddy-App](https://github.com/IsravelTECH/BuyBuddy-App)
 
 ---
 
@@ -190,7 +190,7 @@ npm start
 ## 📱 Mobile App Companion
 
 BuyBuddy also includes a native Flutter mobile app with automatic APK builds via GitHub Actions:
-- Check out the mobile repository: [IsravelTECH/BuyBuddy](https://github.com/IsravelTECH/BuyBuddy)
+- Check out the mobile repository: [IsravelTECH/BuyBuddy-App](https://github.com/IsravelTECH/BuyBuddy-App)
 
 ---
 
